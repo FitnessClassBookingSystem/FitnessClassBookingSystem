@@ -46,6 +46,17 @@ class TestUserRouter(unittest.TestCase):
         )
         self.assertEqual(response.status_code,200)
 
+    def test_to_login_user_with_unknown_email(self):
+        response = self.client.post(
+            "/login",
+            params={
+                "email": "lucy_jkl@gmail.com",
+                "password": "1234"
+            }
+        )
+        self.assertEqual(response.status_code,200)
+
+
     def test_to_logout_user(self):
         response = self.client.post("/logout")
 

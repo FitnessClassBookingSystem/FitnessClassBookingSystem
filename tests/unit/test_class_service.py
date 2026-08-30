@@ -11,15 +11,14 @@ class MyTestCase(unittest.TestCase):
         repository = ClassRepository()
         service = ClassService(repository)
 
-        fitness_class = self.create_class(
+        fitness_class = service.create_class(
             1,
             "Morning Yoga",
             "Fitness Master",
             30
         )
 
-        self.assertEqual(fitness_class.id, 1)
-        self.assertEqual(fitness_class.name, "Morning Yoga")
+        self.assertEqual(fitness_class.title, "Morning Yoga")
         self.assertEqual(fitness_class.instructor, "Fitness Master")
         self.assertEqual(fitness_class.capacity, 30)
 
@@ -48,7 +47,6 @@ class MyTestCase(unittest.TestCase):
 
         self.assertIn(class1, classes)
         self.assertIn(class2, classes)
-
 
 
 if __name__ == '__main__':

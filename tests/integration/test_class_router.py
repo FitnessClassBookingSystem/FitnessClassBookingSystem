@@ -17,7 +17,7 @@ class TestClassRouter(unittest.TestCase):
                 "id": 1,
                 "title": "Morning Yoga",
                 "instructor": "Fitness Master",
-                "capacity": 20
+                "capacity": 30
             }
         )
 
@@ -30,7 +30,7 @@ class TestClassRouter(unittest.TestCase):
                 "id": 1,
                 "title": "Morning Yoga",
                 "instructor": "Fitness Master",
-                "capacity": 20
+                "capacity": 30
             }
         )
 

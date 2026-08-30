@@ -90,6 +90,17 @@ class TestUserService(unittest.TestCase):
         )
         self.assertEqual(found_user, None)
 
+    def test_to_login_with_unknown_email(self):
+        repository = UserRepository()
+        service = UserService(repository)
+
+        found_user = service.login(
+            "lucy_jkl@gmail.com",
+            "1234"
+        )
+        self.assertEqual(found_user, None)
+
+
     def test_to_logout_user(self):
         repository = UserRepository()
         service = UserService(repository)
