@@ -1,6 +1,6 @@
-def main():
-    print("Hello from fitnessclassbookingsystem!")
+from fastapi import FastAPI
 
+from fitness_booking.routers.user_router import router as class_router
 
-if __name__ == "__main__":
-    main()
+app = FastAPI()
+app.include_router(class_router)
