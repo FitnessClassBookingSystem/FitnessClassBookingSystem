@@ -1,51 +1,43 @@
-# from fitness_booking.dtos.request.login_user_request import LoginUserRequest
-# from fitness_booking.dtos.request.logout_user_request import LogoutUserRequest
-# from fitness_booking.repositories.mysql_user_repository import MySQLUserRepository
-# from fitness_booking.dtos.request.register_user_request import RegisterUserRequest
-# from fitness_booking.dtos.response.login_user_response import LoginUserResponse
-# from fitness_booking.dtos.response.logout_user_response import LogoutUserResponse
-# from fitness_booking.dtos.response.register_user_response import RegisterUserResponse
-# from fitness_booking.models.user_model import User
-#
-#
-# class UserNotFoundError(Exception):
-#     pass
-#
-#
-# class UserService:
-#
-#     def __init__(self, user_storage: MySQLUserRepository):
-#         self.user_storage = user_storage
-#
-#
-#     def register(self, user_request: RegisterUserRequest) -> RegisterUserResponse:
-#         existing_user = self.user_storage.find_by_username(user_request.username)
-#         if existing_user != None:
-#             raise UserNotFoundError('User already exist.')
-#
-#         user = User(username=user_request.username, email=user_request.email, password=user_request.password)
-#         self.user_storage.save(user)
-#         user_response = RegisterUserResponse(message="User registered successfully.")
-#         return user_response
-#
-#
-#     def login(self, login_request: LoginUserRequest) -> LoginUserResponse:
-#         existing_user = self.user_storage.get_by_username(login_request.username)
-#         if existing_user == None:
-#             raise UserNotFoundError('Username not found.')
-#         if existing_user.password != login_request.password:
-#             raise UserNotFoundError('Invalid password.')
-#
-#         existing_user.is_logged_in = True
-#         login_response = LoginUserResponse(message="Login successful.")
-#         return login_response
-#
-#
-#     def logout(self, logout_request: LogoutUserRequest) -> LogoutUserResponse:
-#         existing_user = self.user_storage.get_by_username(logout_request.username)
-#         if existing_user == None:
-#             raise UserNotFoundError('User not found.')
-#
-#         existing_user.is_logged_in = False
-#         logout_response = LogoutUserResponse(message="Logout successful.")
-#         return logout_response
+from fitness_booking.dtos.request.cancel_booking_request import CancelBookingRequest
+from fitness_booking.dtos.response.cancel_booking_response import CancelBookingResponse
+from fitness_booking.repositories.mysql_booked_sessions_repository import MySQLBookedSessionRepository
+from fitness_booking.repositories.mysql_booking_repository import MySQLBookingRepository
+from fitness_booking.repositories.mysql_user_repository import MySQLUserRepository
+from fitness_booking.dtos.request.booking_session_request import BookingSessionRequest
+from fitness_booking.dtos.response.booking_session_response import BookingSessionResponse
+from fitness_booking.services.admin_service import SessionNotFoundError
+
+
+class UserService:
+
+    def __init__(self, user_storage: MySQLUserRepository,
+                 booking_repository: MySQLBookingRepository,
+                 booked_session_storage: MySQLBookedSessionRepository):
+        self.user_storage = user_storage
+        self.booking_repository = booking_repository
+        self.booked_session_storage = booked_session_storage
+
+
+    def book_session(self, booking_request: BookingSessionRequest) -> BookingSessionResponse:
+        existing_session = self.booking_repository.find_by_title(booking_request.session_title)
+        if existing_session is None:
+            raise SessionNotFoundError('session not found')
+
+        new_session = BookingSessionRequest(session_title=booking_request.session_title)
+        self.booked_session_storage.save(self.booking_repository.find_by_title(new_session.session_title))
+        existing_session.booked +=1
+        self.booking_repository.save(existing_session)
+        booking_response = BookingSessionResponse(message='you have successfully booked a new session')
+        return booking_response
+
+
+    def cancel_booking(self, cancel_request: CancelBookingRequest) -> CancelBookingResponse:
+        existing_booking = (self.booked_session_storage.find_by_title(cancel_request.session_title))
+        if existing_booking is None:
+            raise SessionNotFoundError('session not found')
+
+        # self.booked_session_storage.delete_by_title(cancel_request.session_title)
+        existing_booking.booked -= 1
+        self.booked_session_storage.save(existing_booking)
+        canceled_session_response = CancelBookingResponse(message='session has been canceled !!!',)
+        return canceled_session_response

@@ -17,3 +17,4 @@ class Booking(Base):
     session_date: Mapped[date] = mapped_column()
     start_time: Mapped[time] = mapped_column()
     end_time: Mapped[time] = mapped_column()
+    booked: Mapped[int] = mapped_column(default=0)

@@ -1,12 +1,14 @@
-from datetime import datetime, date
+from datetime import datetime, date, time
 
 from pydantic import BaseModel
 
 
 
 class UpdateSessionRequest(BaseModel):
-    new_title: str
+    session_title: str
     new_instructor: str
+    new_title: str
+    new_description: str
     session_date: date
-    start_time: datetime
-    end_time: datetime
+    start_time: time
+    end_time: time
