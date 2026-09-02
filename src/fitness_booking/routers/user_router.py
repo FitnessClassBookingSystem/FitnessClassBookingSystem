@@ -1,34 +1,28 @@
 from fastapi import APIRouter
 
 from fitness_booking.db.database import SessionLocal
-from fitness_booking.dtos.request.login_user_request import LoginUserRequest
-from fitness_booking.dtos.request.logout_user_request import LogoutUserRequest
-from fitness_booking.dtos.request.register_user_request import RegisterUserRequest
-from fitness_booking.dtos.response.login_user_response import LoginUserResponse
-from fitness_booking.dtos.response.logout_user_response import LogoutUserResponse
-from fitness_booking.dtos.response.register_user_response import RegisterUserResponse
+from fitness_booking.dtos.request.booking_session_request import BookingSessionRequest
+from fitness_booking.dtos.request.cancel_booking_request import CancelBookingRequest
+from fitness_booking.dtos.response.booking_session_response import BookingSessionResponse
+from fitness_booking.dtos.response.cancel_booking_response import CancelBookingResponse
+from fitness_booking.repositories.mysql_booked_sessions_repository import MySQLBookedSessionRepository
+from fitness_booking.repositories.mysql_booking_repository import MySQLBookingRepository
 from fitness_booking.repositories.mysql_user_repository import MySQLUserRepository
-from fitness_booking.services.auth_service import AuthService
+from fitness_booking.services.user_service import UserService
 
 router = APIRouter()
 
 db = SessionLocal()
 user_repository = MySQLUserRepository(db)
-auth_service = AuthService(user_repository)
+booking_repository = MySQLBookingRepository(db)
+booked_session_repository = MySQLBookedSessionRepository(db)
+user_service = UserService(user_repository, booking_repository, booked_session_repository)
 
 
-# @router.post("/auth")
-#
-# class UserRouter(APIRouter):
+@router.post("/user/book_session", tags=["user"])
+def book_session(booking_request: BookingSessionRequest) -> BookingSessionResponse:
+    return user_service.book_session(booking_request)
 
-@router.post("/auth/register")
-def register(self, register_request: RegisterUserRequest) -> RegisterUserResponse:
-    return auth_service.register(register_request)
-
-@router.post("/auth/login")
-def login(self, login_request: LoginUserRequest) -> LoginUserResponse:
-    return auth_service.login(login_request)
-
-@router.post("/auth/logout")
-def logout(self, logout_request: LogoutUserRequest) -> LogoutUserResponse:
-    return auth_service.logout(logout_request)
+@router.post("/user/cancel_booking", tags=["user"])
+def cancel_booking(cancel_booking_request: CancelBookingRequest) -> CancelBookingResponse:
+    return user_service.cancel_booking(cancel_booking_request)
