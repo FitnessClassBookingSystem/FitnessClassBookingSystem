@@ -7,7 +7,6 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from fitness_booking.models.admin_model import Base
 
-
 class Booking(Base):
     __tablename__ = "bookings"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
