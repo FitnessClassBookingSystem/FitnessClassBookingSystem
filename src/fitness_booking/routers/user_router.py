@@ -23,6 +23,6 @@ user_service = UserService(user_repository, booking_repository, booked_session_r
 def book_session(booking_request: BookingSessionRequest) -> BookingSessionResponse:
     return user_service.book_session(booking_request)
 
-@router.post("/user/cancel_booking", tags=["user"])
+@router.delete("/user/cancel_booking", tags=["user"])
 def cancel_booking(cancel_booking_request: CancelBookingRequest) -> CancelBookingResponse:
     return user_service.cancel_booking(cancel_booking_request)
