@@ -18,7 +18,8 @@ class SessionNotFoundError(Exception):
 
 class AdminService:
 
-    def __init__(self, instructor_repository: MySQLAdminRepository, booking_repository: MySQLBookingRepository):
+    def __init__(self, instructor_repository: MySQLAdminRepository,
+                 booking_repository: MySQLBookingRepository):
         self.instructor_repository = instructor_repository
         self.booking_repository = booking_repository
 
@@ -60,3 +61,7 @@ class AdminService:
         self.booking_repository.save(existing_session)
         update_response = UpdateSessionResponse(message='session updated successfully')
         return update_response
+
+
+    def view_sessions(self) -> list[Booking]:
+        return self.booking_repository.find_all()

@@ -24,7 +24,7 @@ class MySQLBookingRepository:
             self.db.commit()
 
 
-    def find_by_title(self, title: str) -> None | Booking:
+    def find_by_title(self, title: str) -> Booking:
         session = self.db.query(Booking).filter(Booking.title == title).first()
         return session
 
